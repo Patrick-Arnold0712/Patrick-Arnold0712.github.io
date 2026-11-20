@@ -3,253 +3,387 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>伍谢安南 (Patrick Arnold) - 个人主页与项目展示</title>
+  <title>PatrickArnold's Studio</title>
   <link rel="icon" href="./wx-logo.jpg" type="image/jpeg" />
   <style>
     :root {
-      --bg: #000000;
-      --glass: rgba(28, 28, 30, 0.65);
-      --glass-hover: rgba(40, 40, 44, 0.8);
-      --border: rgba(255, 255, 255, 0.13);
-      --border-hover: rgba(255, 255, 255, 0.3);
-      --rim-light: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      --bg: #030407;
+      --glass: rgba(24, 24, 28, 0.58);
+      --glass-strong: rgba(30, 30, 36, 0.78);
+      --border: rgba(255, 255, 255, 0.11);
+      --border-strong: rgba(255, 255, 255, 0.25);
+      --rim: inset 0 1px 0 rgba(255, 255, 255, 0.16);
       --text: #f5f5f7;
-      --text-muted: #a1a1a6;
-      --apple-blue: #0a84ff;
-      --apple-blue-soft: rgba(10, 132, 255, 0.16);
-      --red-soft: rgba(255, 59, 48, 0.18);
+      --text-2: #a1a1a6;
+      --text-3: #6e6e73;
+      --blue: #0a84ff;
+      --blue-soft: rgba(10, 132, 255, 0.15);
+      --red-soft: rgba(255, 59, 48, 0.16);
       --red-text: #ff6961;
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+      --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.65;
-      min-height: 100vh;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
+      background: var(--bg); color: var(--text); line-height: 1.65; min-height: 100vh; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased; transition: opacity 0.22s ease, transform 0.22s ease;
     }
+    body.page-leaving { opacity: 0; transform: scale(0.992); }
     a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 
-    .dark-ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #000; }
-    .glow { position: absolute; border-radius: 50%; filter: blur(115px); opacity: 0.42; animation: drift 18s ease-in-out infinite alternate; }
-    .glow-1 { width: 580px; height: 580px; background: radial-gradient(circle, #1d4ed8 0%, #0f172a 70%, transparent 100%); top: -160px; right: -90px; }
-    .glow-2 { width: 500px; height: 500px; background: radial-gradient(circle, #3730a3 0%, #090d1f 70%, transparent 100%); bottom: 8%; left: -140px; animation-delay: -6s; }
-    .glow-3 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(250, 204, 21, 0.24) 0%, transparent 70%); top: 40%; right: 16%; opacity: 0.32; animation-delay: -11s; }
-    @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, -25px) scale(1.06); } }
-
-    .glass {
-      background: var(--glass);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1px solid var(--border);
-      box-shadow: var(--rim-light), var(--shadow);
+    /* ========= 开屏动效 (PatrickArnold's Studio) ========= */
+    .splash {
+      position: fixed; inset: 0; z-index: 999; background: #020306;
+      display: grid; place-items: center; cursor: pointer; user-select: none;
+      transition: opacity 0.72s var(--ease-out), transform 0.72s var(--ease-out), filter 0.72s ease;
     }
+    .splash.is-done { opacity: 0; transform: scale(1.045); filter: blur(10px); pointer-events: none; }
+    .splash-glow {
+      position: absolute; width: 340px; height: 340px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(10, 132, 255, 0.22), rgba(56, 189, 248, 0.06) 46%, transparent 72%);
+      filter: blur(28px); opacity: 0; transform: scale(0.7);
+      animation: splashGlow 1.6s var(--ease-out) 0.05s forwards;
+    }
+    .splash-core { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+    .splash-logo-ring {
+      position: relative; width: 106px; height: 106px; border-radius: 50%;
+      display: grid; place-items: center; overflow: visible;
+    }
+    .ring-svg { position: absolute; inset: -6px; width: 118px; height: 118px; transform: rotate(-90deg); pointer-events: none; }
+    .ring-track { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 1.4; }
+    .ring-draw {
+      fill: none; stroke: rgba(255, 255, 255, 0.85); stroke-width: 1.6; stroke-linecap: round;
+      stroke-dasharray: 340; stroke-dashoffset: 340;
+      animation: ringDraw 1.08s var(--ease-spring) 0.08s forwards;
+    }
+    .splash-logo-clip {
+      position: relative; width: 96px; height: 96px; border-radius: 50%; overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      opacity: 0; transform: scale(0.84); filter: blur(8px);
+      animation: logoReveal 0.86s var(--ease-spring) 0.06s forwards;
+    }
+    .splash-logo-clip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .splash-sheen {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.42) 50%, transparent 70%);
+      transform: translateX(-130%); animation: sheenSweep 0.85s var(--ease-out) 0.56s forwards;
+    }
+    .splash-title-mask { overflow: hidden; margin-top: 24px; padding: 2px 6px; }
+    .splash-title {
+      font-size: clamp(1.22rem, 2.8vw, 1.6rem); font-weight: 600;
+      background: linear-gradient(180deg, #ffffff 20%, #a5aab5 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      opacity: 0; transform: translateY(115%); letter-spacing: 0.14em;
+      animation: titleRise 0.88s var(--ease-spring) 0.34s forwards;
+    }
+    .splash-line {
+      width: 56px; height: 1px; margin-top: 14px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.48), transparent);
+      opacity: 0; transform: scaleX(0); animation: lineExpand 0.72s var(--ease-out) 0.54s forwards;
+    }
+    @keyframes splashGlow { to { opacity: 1; transform: scale(1.06); } }
+    @keyframes ringDraw { to { stroke-dashoffset: 0; } }
+    @keyframes logoReveal { to { opacity: 1; transform: scale(1); filter: blur(0); } }
+    @keyframes sheenSweep { to { transform: translateX(130%); } }
+    @keyframes titleRise { to { opacity: 1; transform: translateY(0); letter-spacing: 0.03em; } }
+    @keyframes lineExpand { to { opacity: 1; transform: scaleX(1); } }
 
-    .container { max-width: 1020px; margin: 0 auto; padding: 0 24px; }
+    /* 顶部阅读进度条 & Canvas 氛围背景 */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 2px; width: 100%; z-index: 200;
+      transform-origin: left center; transform: scaleX(0); pointer-events: none;
+      background: linear-gradient(90deg, #0a84ff, #38bdf8, #a5b4fc);
+    }
+    #ambientCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
-    .nav-wrap { position: sticky; top: 18px; z-index: 100; display: flex; justify-content: center; padding: 0 20px; margin-top: 18px; }
+    /* 玻璃拟态卡片 + VisionOS 光斑跟随 */
+    .glass-card {
+      position: relative; background: var(--glass);
+      backdrop-filter: blur(22px) saturate(165%); -webkit-backdrop-filter: blur(22px) saturate(165%);
+      border: 1px solid var(--border); box-shadow: var(--rim), 0 24px 56px rgba(0, 0, 0, 0.52); overflow: hidden;
+    }
+    .glass-card::before {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      opacity: 0; transition: opacity 0.35s ease; z-index: 1;
+      background: radial-gradient(440px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.085), transparent 62%);
+    }
+    .glass-card:hover::before { opacity: 1; }
+    .glass-card > * { position: relative; z-index: 2; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    /* 灵动岛导航 + 丝滑滑块 */
+    .nav-wrap { position: sticky; top: 18px; z-index: 120; display: flex; justify-content: center; padding: 0 16px; margin-top: 18px; }
     .nav-island {
-      display: flex; align-items: center; gap: 24px; padding: 8px 22px 8px 10px; border-radius: 999px;
-      background: rgba(24, 24, 26, 0.78); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 16px 40px rgba(0, 0, 0, 0.6);
+      display: flex; align-items: center; gap: 12px; padding: 6px 8px; border-radius: 999px;
+      background: rgba(20, 20, 24, 0.74); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 18px 44px rgba(0, 0, 0, 0.58);
     }
-    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.94rem; padding-right: 16px; border-right: 1px solid rgba(255, 255, 255, 0.14); }
-    .nav-logo { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.25); }
-    .nav-links { display: flex; gap: 22px; font-size: 0.9rem; color: var(--text-muted); }
-    .nav-links a:hover { color: var(--text); }
+    .nav-brand {
+      display: flex; align-items: center; gap: 9px; padding: 2px 14px 2px 2px;
+      border-right: 1px solid rgba(255, 255, 255, 0.12); font-weight: 600; font-size: 0.9rem;
+    }
+    .nav-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.24); }
+    .nav-links { position: relative; display: flex; align-items: center; gap: 2px; }
+    .nav-pill {
+      position: absolute; top: 0; left: 0; height: 100%; border-radius: 999px; pointer-events: none;
+      background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.38s var(--ease-spring), width 0.38s var(--ease-spring), opacity 0.25s; opacity: 0;
+    }
+    .nav-links a { position: relative; z-index: 2; padding: 6px 14px; border-radius: 999px; font-size: 0.86rem; font-weight: 500; color: var(--text-2); transition: color 0.2s; }
+    .nav-links a.active, .nav-links a:hover { color: var(--text); }
 
-    .hero-section { padding: 46px 0 34px; }
-    .hero-card { border-radius: 34px; padding: 46px; display: flex; align-items: center; justify-content: space-between; gap: 44px; position: relative; overflow: hidden; }
-    .hero-content { max-width: 560px; }
+    /* Hero */
+    .hero-section { padding: 44px 0 28px; }
+    .hero-card { border-radius: 34px; padding: 48px; display: flex; align-items: center; justify-content: space-between; gap: 44px; }
+    .hero-content { max-width: 540px; }
     .edu-pill {
-      display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
-      background: rgba(10, 132, 255, 0.14); border: 1px solid rgba(10, 132, 255, 0.32); color: #60a5fa; font-size: 0.83rem; font-weight: 600; margin-bottom: 20px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 5px 13px; border-radius: 999px;
+      background: rgba(10, 132, 255, 0.12); border: 1px solid rgba(10, 132, 255, 0.28); color: #60a5fa; font-size: 0.8rem; font-weight: 600; margin-bottom: 20px;
     }
-    .edu-dot { width: 7px; height: 7px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+    .edu-dot { width: 6px; height: 6px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; animation: pulse 2.6s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.85); } }
     .hero-content h1 {
-      font-size: clamp(2.1rem, 4.2vw, 3.1rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.18; margin-bottom: 8px;
-      background: linear-gradient(180deg, #ffffff 0%, #c7c7cc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-size: clamp(2.15rem, 4.3vw, 3.25rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.14; margin-bottom: 8px;
+      background: linear-gradient(180deg, #ffffff 15%, #b8b8c0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .hero-en-name { font-size: 1.05rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.02em; margin-bottom: 20px; }
-    .hero-content p { font-size: 1.04rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.7; }
+    .hero-sub { font-size: 1rem; font-weight: 500; color: var(--text-3); margin-bottom: 18px; }
+    .hero-content p { font-size: 1.02rem; color: var(--text-2); margin-bottom: 28px; line-height: 1.72; }
     .hero-content p strong { color: var(--text); font-weight: 600; }
 
-    .btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
     .btn {
-      padding: 11px 22px; border-radius: 999px; font-size: 0.92rem; font-weight: 600;
-      display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none; font-family: inherit;
-      transition: transform 0.2s ease, background-color 0.2s ease;
+      padding: 11px 22px; border-radius: 999px; font-size: 0.9rem; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 7px; cursor: pointer; border: none;
+      transition: transform 0.2s var(--ease-spring), background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
-    .btn-primary { background-color: var(--apple-blue); color: #ffffff; }
-    .btn-primary:hover { background-color: #2693ff; transform: translateY(-1px); }
-    .btn-glass { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: var(--text); }
-    .btn-glass:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-1px); }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 8px 24px rgba(10, 132, 255, 0.28); }
+    .btn-primary:hover { background: #2290ff; transform: translateY(-1px); box-shadow: 0 12px 28px rgba(10, 132, 255, 0.38); }
+    .btn-glass { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); color: var(--text); }
+    .btn-glass:hover { background: rgba(255, 255, 255, 0.13); border-color: rgba(255, 255, 255, 0.26); transform: translateY(-1px); }
 
+    /* 3D 视差头像 */
+    .avatar-stage { perspective: 900px; flex-shrink: 0; }
     .avatar-wrap {
-      width: 248px; height: 248px; flex-shrink: 0; border-radius: 36px; padding: 4px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.24), rgba(255,255,255,0.04)); box-shadow: 0 24px 50px rgba(0, 0, 0, 0.72);
+      position: relative; width: 242px; height: 242px; border-radius: 36px; padding: 4px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04));
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.72); transform-style: preserve-3d; overflow: hidden;
+      transition: transform 0.55s var(--ease-spring);
     }
+    .avatar-wrap.tilting { transition: transform 0.12s ease-out; }
     .avatar-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 32px; display: block; }
+    .avatar-sheen {
+      position: absolute; inset: 0; border-radius: 36px; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+      background: radial-gradient(240px circle at var(--ax, 50%) var(--ay, 50%), rgba(255, 255, 255, 0.24), transparent 65%);
+    }
+    .avatar-wrap:hover .avatar-sheen { opacity: 1; }
 
-    .section-head { margin: 56px 0 22px; display: flex; align-items: baseline; justify-content: space-between; }
-    .section-head h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
-    .section-head span { font-size: 0.9rem; color: var(--text-muted); }
+    /* 章节头 & Apple 分段筛选 */
+    .section-head { margin: 62px 0 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .section-head h2 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.025em; }
+    .section-meta { font-size: 0.88rem; color: var(--text-3); }
 
-    .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
-    .about-card { border-radius: 28px; padding: 32px; }
-    .about-card h3 { font-size: 1.15rem; margin-bottom: 12px; font-weight: 600; }
-    .about-card p { color: var(--text-muted); font-size: 0.96rem; margin-bottom: 12px; }
+    .segmented { position: relative; display: inline-flex; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .seg-pill {
+      position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: 999px; pointer-events: none;
+      background: rgba(255, 255, 255, 0.14); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: transform 0.36s var(--ease-spring), width 0.36s var(--ease-spring);
+    }
+    .seg-btn { position: relative; z-index: 2; background: none; border: none; color: var(--text-2); font-size: 0.82rem; font-weight: 600; padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: color 0.2s; }
+    .seg-btn.active, .seg-btn:hover { color: var(--text); }
+
+    /* 关于我 */
+    .about-grid { display: grid; grid-template-columns: 1.28fr 1fr; gap: 18px; }
+    .about-card { border-radius: 28px; padding: 30px; }
+    .about-card h3 { font-size: 1.08rem; font-weight: 600; margin-bottom: 12px; }
+    .about-card p { color: var(--text-2); font-size: 0.94rem; margin-bottom: 10px; line-height: 1.7; }
     .about-card p:last-child { margin-bottom: 0; }
-    .skills-wrap { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .skill-chip {
-      padding: 7px 14px; border-radius: 12px; font-size: 0.84rem; font-weight: 500;
-      background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text);
+      padding: 6px 13px; border-radius: 10px; font-size: 0.82rem; font-weight: 500;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s var(--ease-spring), background 0.2s, border-color 0.2s;
     }
+    .skill-chip:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.11); border-color: rgba(255, 255, 255, 0.24); }
 
-    /* ========= 2x2 全配图标项目卡片 ========= */
-    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    /* 项目网格 */
+    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .project-card {
-      border-radius: 28px; padding: 20px; display: flex; flex-direction: column;
-      cursor: pointer; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s, border-color 0.25s;
+      border-radius: 28px; padding: 18px; display: flex; flex-direction: column; cursor: pointer;
+      transition: transform 0.36s var(--ease-spring), border-color 0.28s, background 0.28s, box-shadow 0.36s;
     }
-    .project-card:hover { transform: translateY(-6px); background: var(--glass-hover); border-color: var(--border-hover); }
+    .project-card:hover { transform: translateY(-6px); background: var(--glass-strong); border-color: var(--border-strong); box-shadow: var(--rim), 0 32px 68px rgba(0, 0, 0, 0.72); }
+    .project-card.is-hidden { display: none; }
+    .project-card.pop-in { animation: cardPop 0.42s var(--ease-spring) both; }
+    @keyframes cardPop { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     .project-preview {
-      height: 164px; border-radius: 20px; margin-bottom: 18px; padding: 18px 20px;
+      height: 158px; border-radius: 20px; margin-bottom: 16px; padding: 18px;
       display: flex; flex-direction: column; justify-content: space-between;
       border: 1px solid rgba(255, 255, 255, 0.12); position: relative; overflow: hidden;
     }
-    .p-weijie   { background: linear-gradient(135deg, #0f172a 0%, #312e81 55%, #0e7490 100%); }
-    .p-titi     { background: linear-gradient(135deg, #062c1e 0%, #0f766e 55%, #1d4ed8 100%); }
-    .p-spend    { background: linear-gradient(135deg, #05261a 0%, #0d6847 65%, #10b981 100%); }
-    .p-hardware { background: linear-gradient(135deg, #09090b 0%, #450a0a 60%, #991b1b 100%); }
+    .p-weijie   { background: linear-gradient(135deg, #0d1528 0%, #2a276e 55%, #0e6f8c 100%); }
+    .p-titi     { background: linear-gradient(135deg, #05261a 0%, #0d6963 55%, #1944b5 100%); }
+    .p-spend    { background: linear-gradient(135deg, #041f15 0%, #0b5d40 62%, #109e6c 100%); }
+    .p-hardware { background: linear-gradient(135deg, #09090b 0%, #3d090a 58%, #8f181a 100%); }
 
-    .preview-top { display: flex; justify-content: space-between; align-items: center; }
+    .preview-top, .preview-bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .preview-bottom { align-items: flex-end; }
     .preview-badge {
-      font-size: 0.74rem; font-weight: 600; padding: 4px 10px; border-radius: 999px;
-      background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
+      font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+      background: rgba(0, 0, 0, 0.42); border: 1px solid rgba(255, 255, 255, 0.16); color: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px);
     }
     .preview-icon {
       width: 46px; height: 46px; border-radius: 13px; object-fit: cover;
-      border: 1px solid rgba(255, 255, 255, 0.26); background: rgba(0, 0, 0, 0.35);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(0, 0, 0, 0.35);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.42); transition: transform 0.38s var(--ease-spring);
     }
-    .preview-title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
-    .preview-title { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
-    .enter-hint {
-      font-size: 0.76rem; padding: 4px 10px; border-radius: 999px;
-      background: rgba(255, 255, 255, 0.16); color: #fff; font-weight: 600; white-space: nowrap;
-      transition: background 0.2s;
+    .project-card:hover .preview-icon { transform: scale(1.08) rotate(-2deg); }
+    .preview-title { font-size: 1.28rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+    .enter-chip {
+      font-size: 0.74rem; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.15);
+      color: #fff; font-weight: 600; white-space: nowrap; transition: background 0.22s, transform 0.28s var(--ease-spring);
     }
-    .project-card:hover .enter-hint { background: var(--apple-blue); }
+    .project-card:hover .enter-chip { background: var(--blue); transform: translateX(2px); }
 
     .project-body { padding: 0 6px; display: flex; flex-direction: column; flex-grow: 1; }
-    .project-body h3 { font-size: 1.16rem; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .exp-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; background: var(--red-soft); color: var(--red-text); font-weight: 600; }
-    .project-body p { font-size: 0.91rem; color: var(--text-muted); margin-bottom: 16px; flex-grow: 1; line-height: 1.65; }
+    .project-body h3 { font-size: 1.12rem; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .exp-badge { font-size: 0.68rem; padding: 2px 7px; border-radius: 6px; background: var(--red-soft); color: var(--red-text); font-weight: 600; }
+    .project-body p { font-size: 0.89rem; color: var(--text-2); margin-bottom: 14px; flex-grow: 1; line-height: 1.65; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .tag { font-size: 0.74rem; padding: 3px 9px; border-radius: 7px; background: var(--blue-soft); color: #60a5fa; font-weight: 500; }
+    .project-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.85rem; }
+    .link-main { color: #60a5fa; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .link-main .arrow { display: inline-block; transition: transform 0.25s var(--ease-spring); }
+    .project-card:hover .link-main .arrow { transform: translateX(4px); }
+    .link-sub { color: var(--text-2); font-size: 0.82rem; transition: color 0.2s; }
+    .link-sub:hover { color: var(--text); }
 
-    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-    .tag-blue { font-size: 0.76rem; padding: 3px 10px; border-radius: 8px; background: var(--apple-blue-soft); color: #60a5fa; font-weight: 500; }
-
-    .project-links {
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-      padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.87rem; font-weight: 600;
-    }
-    .link-primary { color: #60a5fa; transition: color 0.2s; }
-    .link-primary:hover { color: #93c5fd; }
-    .link-secondary { color: var(--text-muted); font-weight: 500; font-size: 0.84rem; transition: color 0.2s; }
-    .link-secondary:hover { color: var(--text); }
-
-    .contact-card { margin: 56px 0 28px; border-radius: 32px; padding: 46px 32px; text-align: center; }
-    .contact-card h2 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
-    .contact-card p { color: var(--text-muted); max-width: 520px; margin: 0 auto 26px; font-size: 0.96rem; }
+    /* 联系与页脚 */
+    .contact-card { margin: 62px 0 28px; border-radius: 32px; padding: 46px 32px; text-align: center; }
+    .contact-card h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 10px; }
+    .contact-card p { color: var(--text-2); max-width: 480px; margin: 0 auto 26px; font-size: 0.95rem; }
     .contact-card .btn-row { justify-content: center; }
-
-    footer {
-      padding: 28px 0 44px; display: flex; align-items: center; justify-content: space-between;
-      color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+    footer { padding: 26px 0 46px; display: flex; align-items: center; justify-content: space-between; color: var(--text-3); font-size: 0.84rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
     .footer-left { display: flex; align-items: center; gap: 10px; }
-    .footer-logo { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .footer-logo { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.2); }
+
+    /* 悬浮 Toast */
+    .toast {
+      position: fixed; left: 50%; bottom: 28px; z-index: 300;
+      transform: translate(-50%, 24px) scale(0.94); opacity: 0; pointer-events: none;
+      padding: 10px 20px; border-radius: 999px; background: rgba(28, 28, 34, 0.92);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65); color: #fff; font-size: 0.86rem; font-weight: 600;
+      display: flex; align-items: center; gap: 8px; transition: transform 0.36s var(--ease-spring), opacity 0.26s ease;
+    }
+    .toast.show { transform: translate(-50%, 0) scale(1); opacity: 1; }
+    .toast-check { width: 18px; height: 18px; border-radius: 50%; background: #30d158; color: #031f0c; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; }
+
+    /* 滚动渐入 */
+    .reveal { opacity: 0; transform: translateY(22px) scale(0.985); transition: opacity 0.72s var(--ease-out), transform 0.72s var(--ease-spring); transition-delay: var(--d, 0ms); }
+    .reveal.in-view { opacity: 1; transform: translateY(0) scale(1); }
 
     @media (max-width: 820px) {
-      .hero-card { flex-direction: column-reverse; text-align: center; padding: 34px 24px; gap: 28px; }
+      .hero-card { flex-direction: column-reverse; text-align: center; padding: 32px 22px; gap: 26px; }
       .btn-row { justify-content: center; }
-      .avatar-wrap { width: 185px; height: 185px; }
+      .avatar-wrap { width: 178px; height: 178px; }
       .about-grid, .projects-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 12px; text-align: center; }
+      .nav-brand span { display: none; }
+      .nav-brand { padding-right: 10px; }
+      .nav-links a { padding: 6px 11px; font-size: 0.83rem; }
+      footer { flex-direction: column; gap: 10px; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .splash { display: none !important; }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body>
-  <div class="dark-ambient">
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
-    <div class="glow glow-3"></div>
+  <!-- 开屏动效 -->
+  <div class="splash" id="introSplash" title="轻点跳过开屏">
+    <div class="splash-glow"></div>
+    <div class="splash-core">
+      <div class="splash-logo-ring">
+        <svg class="ring-svg" viewBox="0 0 118 118" aria-hidden="true">
+          <circle class="ring-track" cx="59" cy="59" r="54" />
+          <circle class="ring-draw" cx="59" cy="59" r="54" />
+        </svg>
+        <div class="splash-logo-clip">
+          <img src="./wx-logo.jpg" alt="WX Logo" />
+          <div class="splash-sheen"></div>
+        </div>
+      </div>
+      <div class="splash-title-mask">
+        <div class="splash-title">PatrickArnold's Studio</div>
+      </div>
+      <div class="splash-line"></div>
+    </div>
   </div>
 
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <canvas id="ambientCanvas" aria-hidden="true"></canvas>
+
   <div class="nav-wrap">
-    <nav class="nav-island">
-      <a href="#" class="nav-brand">
+    <nav class="nav-island" aria-label="主导航">
+      <a href="#top" class="nav-brand">
         <img src="./wx-logo.jpg" alt="WX Logo" class="nav-logo" />
-        <span>Patrick Arnold</span>
+        <span>PatrickArnold's Studio</span>
       </a>
-      <div class="nav-links">
-        <a href="#about">关于我</a>
-        <a href="#projects">项目展示</a>
-        <a href="#contact">联系</a>
+      <div class="nav-links" id="navLinks">
+        <div class="nav-pill" id="navPill"></div>
+        <a href="#about" data-sec="about">关于</a>
+        <a href="#projects" data-sec="projects">项目</a>
+        <a href="#contact" data-sec="contact">联系</a>
       </div>
     </nav>
   </div>
 
-  <main class="container">
+  <main class="container" id="top">
     <section class="hero-section">
-      <div class="glass hero-card">
+      <div class="glass-card hero-card reveal in-view">
         <div class="hero-content">
-          <div class="edu-pill">
-            <span class="edu-dot"></span>
-            <span>中山大学 · 海洋工程与技术</span>
-          </div>
-          <h1>你好，我是伍谢安南</h1>
-          <div class="hero-en-name">Patrick Arnold · Vibe Coding 创作者</div>
+          <div class="edu-pill"><span class="edu-dot"></span><span>中山大学 · 海洋工程与技术</span></div>
+          <h1>你好，我是伍谢安南Arnold</h1>
+          <div class="hero-sub">Patrick Arnold · Vibe Coding 创作者</div>
           <p>
-            平时喜欢玩 <strong>Vibe Coding</strong>，热衷于亲手开发各种有意思的小程序与应用来服务自己的学习与生活——从三维数学交互、本地 OCR 备考题库、Android 模块化记账，到 AI 辅助硬件设计的跨界实验。
+            平时喜欢玩 <strong>Vibe Coding</strong>，致力于开发各种服务学习与日常生活的实用工具——从三维数学交互、本地 OCR 备考题库、Android 智能记账，到 AI 辅助硬件电路设计的开源实验。
           </p>
           <div class="btn-row">
-            <a href="#projects" class="btn btn-primary">浏览项目展示页</a>
-            <a href="https://github.com/Patrick-Arnold0712" target="_blank" rel="noopener" class="btn btn-glass">GitHub 主页 ↗</a>
+            <a href="#projects" class="btn btn-primary">探索 4 个项目 ↓</a>
+            <a href="https://github.com/Patrick-Arnold0712" target="_blank" rel="noopener" class="btn btn-glass">GitHub ↗</a>
             <a href="#contact" class="btn btn-glass">联系我</a>
           </div>
         </div>
-        <div class="avatar-wrap">
-          <img src="./wx-avatar.png" alt="伍谢安南 (Patrick Arnold) 动漫形象" />
+        <div class="avatar-stage">
+          <div class="avatar-wrap" id="avatarTilt">
+            <img src="./wx-avatar.png" alt="伍谢安南 (Patrick Arnold) 动漫形象" />
+            <div class="avatar-sheen"></div>
+          </div>
         </div>
       </div>
     </section>
 
     <section id="about">
-      <div class="section-head">
+      <div class="section-head reveal">
         <h2>关于我</h2>
-        <span>About & Capabilities</span>
+        <span class="section-meta">Profile &amp; Stack</span>
       </div>
       <div class="about-grid">
-        <div class="glass about-card">
-          <h3>工程背景 × 实用主义开发</h3>
-          <p>
-            我就读于中山大学海洋工程与技术专业。在工科学习之外，我非常享受借助现代开发工具与 AI 协作（Vibe Coding）快速把脑海里的想法变成真正能运行的产品。
-          </p>
-          <p>
-            点击下方任意项目卡片，都可以进入对应的<strong>图文交互独立展示页</strong>，体验核心功能演示并获取项目源码与在线入口。
-          </p>
+        <div class="glass-card about-card reveal" style="--d: 40ms;">
+          <h3>工程思维 × 实用主义开发</h3>
+          <p>就读于中山大学海洋工程与技术专业。在工科学习之外，我习惯借助现代开发栈与 AI 协作快速把生活中的痛点做成顺手可用的软件。</p>
+          <p>下方每个项目都配有独立的<strong>图文交互展示页</strong>，点击卡片即可平滑进入体验核心功能与源码说明。</p>
         </div>
-
-        <div class="glass about-card">
-          <h3>常用技术栈与探索领域</h3>
+        <div class="glass-card about-card reveal" style="--d: 100ms;">
+          <h3>常用技术栈</h3>
           <div class="skills-wrap">
             <span class="skill-chip">Vibe Coding</span>
             <span class="skill-chip">Kotlin / Compose</span>
@@ -267,130 +401,102 @@
     </section>
 
     <section id="projects">
-      <div class="section-head">
+      <div class="section-head reveal">
         <h2>构建的项目</h2>
-        <span>点击卡片进入图文展示页 · 04</span>
+        <div class="segmented" id="projectFilter" role="tablist" aria-label="项目分类筛选">
+          <div class="seg-pill" id="segPill"></div>
+          <button class="seg-btn active" data-filter="all">全部 4</button>
+          <button class="seg-btn" data-filter="study">学习工具</button>
+          <button class="seg-btn" data-filter="life">效率生活</button>
+          <button class="seg-btn" data-filter="hardware">硬件实验</button>
+        </div>
       </div>
 
       <div class="projects-grid">
-        <!-- 1. 维界旅人 -->
-        <article class="glass project-card" data-href="./projects/weijie-traveler.html">
+        <article class="glass-card project-card reveal" style="--d: 30ms;" data-cat="study" data-href="./projects/weijie-traveler.html">
           <div class="project-preview p-weijie">
             <div class="preview-top">
               <span class="preview-badge">3D Math · Pixel</span>
               <img class="preview-icon" src="https://patrick-arnold0712.github.io/weijie-traveler/icon.svg" alt="维界旅人图标" onerror="this.style.display='none'" />
             </div>
-            <div class="preview-title-row">
+            <div class="preview-bottom">
               <div class="preview-title">维界旅人</div>
-              <span class="enter-hint">进入展示页 →</span>
+              <span class="enter-chip">展示页 →</span>
             </div>
           </div>
           <div class="project-body">
             <h3>维界旅人 · Weijie Traveler</h3>
-            <p>
-              像素风线性代数交互学习工具。通过三维向量空间探索、游戏化闯关和“小维”助手，让抽象数学成为可观察、可操作的体验。
-            </p>
-            <div class="project-tags">
-              <span class="tag-blue">三维向量空间</span>
-              <span class="tag-blue">像素风闯关</span>
-              <span class="tag-blue">小维 AI 助手</span>
-            </div>
-            <div class="project-links">
-              <a href="./projects/weijie-traveler.html" class="link-primary">查看图文展示页 →</a>
-              <a href="https://patrick-arnold0712.github.io/weijie-traveler/app.html" target="_blank" rel="noopener" class="link-secondary">直接体验 ↗</a>
+            <p>像素风线性代数交互学习工具。通过三维向量空间探索、游戏化闯关与“小维”助手，让抽象数学直观可操作。</p>
+            <div class="project-tags"><span class="tag">三维向量空间</span><span class="tag">像素风闯关</span><span class="tag">小维助手</span></div>
+            <div class="project-footer">
+              <a href="./projects/weijie-traveler.html" class="link-main">进入图文展示页 <span class="arrow">→</span></a>
+              <a href="https://patrick-arnold0712.github.io/weijie-traveler/app.html" target="_blank" rel="noopener" class="link-sub">在线体验 ↗</a>
             </div>
           </div>
         </article>
 
-        <!-- 2. 题题的库 -->
-        <article class="glass project-card" data-href="./projects/titi-quiz.html">
+        <article class="glass-card project-card reveal" style="--d: 90ms;" data-cat="study" data-href="./projects/titi-quiz.html">
           <div class="project-preview p-titi">
             <div class="preview-top">
               <span class="preview-badge">Full-Stack · RapidOCR</span>
               <img class="preview-icon" src="https://raw.githubusercontent.com/Patrick-Arnold0712/titi-quiz/main/frontend/public/app-icon.png" alt="题题的库图标" onerror="this.style.display='none'" />
             </div>
-            <div class="preview-title-row">
+            <div class="preview-bottom">
               <div class="preview-title">题题的库</div>
-              <span class="enter-hint">进入展示页 →</span>
+              <span class="enter-chip">展示页 →</span>
             </div>
           </div>
           <div class="project-body">
             <h3>题题的库 · Titi Quiz</h3>
-            <p>
-              本地 RapidOCR 驱动的多学科自建题库。支持 256 MiB / 1000 页 PDF 与多格式文档导入校对、原文搜索、章节刷题、组卷与错题回溯考点。
-            </p>
-            <div class="project-tags">
-              <span class="tag-blue">Vue 3</span>
-              <span class="tag-blue">FastAPI</span>
-              <span class="tag-blue">SQLite</span>
-              <span class="tag-blue">本地 OCR</span>
-            </div>
-            <div class="project-links">
-              <a href="./projects/titi-quiz.html" class="link-primary">查看图文展示页 →</a>
-              <a href="https://github.com/Patrick-Arnold0712/titi-quiz" target="_blank" rel="noopener" class="link-secondary">GitHub 源码 ↗</a>
+            <p>本地 RapidOCR 驱动的多学科自建题库。支持大体积 PDF 离线识别校对、原文搜索、章节刷题组卷与错题考点溯源。</p>
+            <div class="project-tags"><span class="tag">Vue 3</span><span class="tag">FastAPI</span><span class="tag">SQLite</span><span class="tag">本地 OCR</span></div>
+            <div class="project-footer">
+              <a href="./projects/titi-quiz.html" class="link-main">进入图文展示页 <span class="arrow">→</span></a>
+              <a href="https://github.com/Patrick-Arnold0712/titi-quiz" target="_blank" rel="noopener" class="link-sub">GitHub ↗</a>
             </div>
           </div>
         </article>
 
-        <!-- 3. EasySpend 易支道（过渡展示页 + 你的绿色钱包图标） -->
-        <article class="glass project-card" data-href="./projects/easyspend.html">
+        <article class="glass-card project-card reveal" style="--d: 150ms;" data-cat="life" data-href="./projects/easyspend.html">
           <div class="project-preview p-spend">
             <div class="preview-top">
               <span class="preview-badge">Android · Compose</span>
               <img class="preview-icon" src="./easyspend-icon.png" alt="EasySpend 易支道图标" />
             </div>
-            <div class="preview-title-row">
+            <div class="preview-bottom">
               <div class="preview-title">EasySpend 易支道</div>
-              <span class="enter-hint">进入展示页 →</span>
+              <span class="enter-chip">展示页 →</span>
             </div>
           </div>
           <div class="project-body">
             <h3>EasySpend 易支道</h3>
-            <p>
-              模块化智能记账 Android 应用。主打息屏防掉线抓账、定位+4 级记忆精准分类、零花/储蓄双资金库核算，以及自备 API 的本地隐私 AI 财务顾问。
-            </p>
-            <div class="project-tags">
-              <span class="tag-blue">Kotlin</span>
-              <span class="tag-blue">Jetpack Compose</span>
-              <span class="tag-blue">Room 本地隐私</span>
-              <span class="tag-blue">BYOK AI</span>
-            </div>
-            <div class="project-links">
-              <a href="./projects/easyspend.html" class="link-primary">查看图文展示页 →</a>
-              <a href="https://patrick-arnold0712.github.io/easyspend-showcase/" target="_blank" rel="noopener" class="link-secondary">完整展示站 ↗</a>
+            <p>面向大学生的模块化智能记账 Android 应用。主打息屏防掉线抓账、定位精准分类、双资金库核算与本地隐私 BYOK AI。</p>
+            <div class="project-tags"><span class="tag">Kotlin</span><span class="tag">Jetpack Compose</span><span class="tag">Room</span><span class="tag">BYOK AI</span></div>
+            <div class="project-footer">
+              <a href="./projects/easyspend.html" class="link-main">进入图文展示页 <span class="arrow">→</span></a>
+              <a href="https://patrick-arnold0712.github.io/easyspend-showcase/" target="_blank" rel="noopener" class="link-sub">独立站 ↗</a>
             </div>
           </div>
         </article>
 
-        <!-- 4. HardwareGenerator（红黑电路图标 + 红黑预览卡） -->
-        <article class="glass project-card" data-href="./projects/hardware-generator.html">
+        <article class="glass-card project-card reveal" style="--d: 210ms;" data-cat="hardware" data-href="./projects/hardware-generator.html">
           <div class="project-preview p-hardware">
             <div class="preview-top">
               <span class="preview-badge">AI EDA Lab · Zero Deps</span>
-              <img class="preview-icon" src="./hardware-icon.svg" alt="HardwareGenerator 电路图标" />
+              <img class="preview-icon" src="./hardware-icon.svg?v=2" alt="HardwareGenerator 电路图标" />
             </div>
-            <div class="preview-title-row">
+            <div class="preview-bottom">
               <div class="preview-title">HardwareGenerator</div>
-              <span class="enter-hint">进入展示页 →</span>
+              <span class="enter-chip">展示页 →</span>
             </div>
           </div>
           <div class="project-body">
-            <h3>
-              HardwareGenerator
-              <span class="exp-badge">链路验证版</span>
-            </h3>
-            <p>
-              嘉立创硬件 Agent 开源实验：将受限需求转为嘉立创 EDA V4.1+ 可打开的 .eprj3 工程包，支持 5V LED 指示灯板与 RC 低通滤波器板，核心链路零依赖并带六步复现测试。
-            </p>
-            <div class="project-tags">
-              <span class="tag-blue">Node.js 零依赖</span>
-              <span class="tag-blue">嘉立创 EDA</span>
-              <span class="tag-blue">KiCad 实验</span>
-              <span class="tag-blue">VerificationBundle</span>
-            </div>
-            <div class="project-links">
-              <a href="./projects/hardware-generator.html" class="link-primary">查看图文展示页 →</a>
-              <a href="https://github.com/Patrick-Arnold0712/HardwareGenerator" target="_blank" rel="noopener" class="link-secondary">GitHub 源码 ↗</a>
+            <h3>HardwareGenerator <span class="exp-badge">链路验证版</span></h3>
+            <p>嘉立创硬件 Agent 开源实验。零依赖生成 LED 与 RC 滤波器 .eprj3 工程与 BOM，带六步复现测试与透明验证边界。</p>
+            <div class="project-tags"><span class="tag">Node.js 零依赖</span><span class="tag">嘉立创 EDA</span><span class="tag">KiCad 实验</span></div>
+            <div class="project-footer">
+              <a href="./projects/hardware-generator.html" class="link-main">进入图文展示页 <span class="arrow">→</span></a>
+              <a href="https://github.com/Patrick-Arnold0712/HardwareGenerator" target="_blank" rel="noopener" class="link-sub">GitHub ↗</a>
             </div>
           </div>
         </article>
@@ -398,12 +504,12 @@
     </section>
 
     <section id="contact">
-      <div class="glass contact-card">
+      <div class="glass-card contact-card reveal">
         <h2>保持联系</h2>
         <p>欢迎交流 Vibe Coding 心得、讨论我的开源项目，或聊聊任何有意思的新点子。</p>
         <div class="btn-row">
-          <button class="btn btn-primary copy-btn" data-email="wuxieannan@gmail.com">复制 Gmail: wuxieannan@gmail.com</button>
-          <button class="btn btn-glass copy-btn" data-email="858123807@qq.com">复制 QQ 邮箱: 858123807@qq.com</button>
+          <button class="btn btn-primary copy-btn" data-email="wuxieannan@gmail.com">Gmail · wuxieannan@gmail.com</button>
+          <button class="btn btn-glass copy-btn" data-email="858123807@qq.com">QQ · 858123807@qq.com</button>
           <a href="https://github.com/Patrick-Arnold0712" target="_blank" rel="noopener" class="btn btn-glass">GitHub ↗</a>
         </div>
       </div>
@@ -412,34 +518,255 @@
     <footer>
       <div class="footer-left">
         <img src="./wx-logo.jpg" alt="WX Logo" class="footer-logo" />
-        <span>© 2026 伍谢安南 (Patrick Arnold). All rights reserved.</span>
+        <span>© 2026 PatrickArnold's Studio · 伍谢安南</span>
       </div>
       <span>SYSU · Crafted with Vibe Coding</span>
     </footer>
   </main>
 
-  <script>
-    document.querySelectorAll('.project-card[data-href]').forEach((card) => {
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('a, button')) return;
-        window.location.href = card.getAttribute('data-href');
-      });
-    });
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-check">✓</span>
+    <span id="toastText">已复制到剪贴板</span>
+  </div>
 
-    document.querySelectorAll('.copy-btn').forEach((btn) => {
-      const originalText = btn.textContent.trim();
-      const email = btn.getAttribute('data-email');
-      btn.addEventListener('click', () => {
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(email).then(() => {
-            btn.textContent = `✓ 已复制 ${email}`;
-            setTimeout(() => { btn.textContent = originalText; }, 2200);
-          });
+  <script>
+    (() => {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+      /* 0. 极简开屏动效控制 */
+      const splash = document.getElementById('introSplash');
+      if (splash) {
+        const fromProject = document.referrer && document.referrer.includes('/projects/');
+        if (reducedMotion || fromProject || window.location.hash) {
+          splash.remove();
         } else {
-          window.location.href = `mailto:${email}`;
+          let closed = false;
+          document.body.style.overflow = 'hidden';
+          const dismissSplash = () => {
+            if (closed) return;
+            closed = true;
+            splash.classList.add('is-done');
+            document.body.style.overflow = '';
+            setTimeout(() => splash.remove(), 760);
+          };
+          const timer = setTimeout(dismissSplash, 1850);
+          splash.addEventListener('click', () => { clearTimeout(timer); dismissSplash(); });
         }
+      }
+
+      /* 1. 借鉴 MotionHarness prepareFrame(time) 的原生 Canvas 柔光背景 */
+      const canvas = document.getElementById('ambientCanvas');
+      const ctx = canvas.getContext('2d');
+      let cw = 0, ch = 0, dpr = 1;
+      const ptr = { x: 0.5, y: 0.35, tx: 0.5, ty: 0.35 };
+      const stars = Array.from({ length: 28 }, (_, i) => ({
+        bx: ((i * 73.13) % 100) / 100,
+        by: ((i * 41.77) % 100) / 100,
+        r: 0.8 + (i % 3) * 0.55,
+        speed: 0.18 + (i % 5) * 0.06,
+        phase: i * 1.37
+      }));
+
+      function resizeCanvas() {
+        dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        cw = window.innerWidth;
+        ch = window.innerHeight;
+        canvas.width = Math.floor(cw * dpr);
+        canvas.height = Math.floor(ch * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function prepareFrame(time) {
+        ctx.clearRect(0, 0, cw, ch);
+        ptr.x += (ptr.tx - ptr.x) * 0.04;
+        ptr.y += (ptr.ty - ptr.y) * 0.04;
+        const px = (ptr.x - 0.5) * 48;
+        const py = (ptr.y - 0.5) * 36;
+        const blobs = [
+          { x: cw * 0.78 + Math.sin(time * 0.28) * 54 + px, y: ch * 0.14 + Math.cos(time * 0.22) * 38 + py, r: Math.max(cw, ch) * 0.44, c0: 'rgba(29, 78, 216, 0.26)', c1: 'rgba(15, 23, 42, 0)' },
+          { x: cw * 0.16 + Math.cos(time * 0.21) * 50 - px * 0.7, y: ch * 0.74 + Math.sin(time * 0.26) * 42 - py * 0.7, r: Math.max(cw, ch) * 0.42, c0: 'rgba(67, 56, 202, 0.22)', c1: 'rgba(9, 13, 31, 0)' },
+          { x: cw * 0.72 + Math.sin(time * 0.19 + 2) * 36 + px * 0.5, y: ch * 0.52 + Math.cos(time * 0.24 + 1) * 28, r: Math.max(cw, ch) * 0.26, c0: 'rgba(250, 204, 21, 0.075)', c1: 'rgba(0, 0, 0, 0)' }
+        ];
+        for (const b of blobs) {
+          const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+          g.addColorStop(0, b.c0);
+          g.addColorStop(1, b.c1);
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, cw, ch);
+        }
+        for (const s of stars) {
+          const x = s.bx * cw + Math.sin(time * s.speed + s.phase) * 14 + px * 0.25;
+          const y = s.by * ch + Math.cos(time * s.speed * 0.8 + s.phase) * 10 + py * 0.25;
+          const a = 0.12 + 0.18 * (0.5 + 0.5 * Math.sin(time * 0.9 + s.phase));
+          ctx.fillStyle = `rgba(220, 234, 255, ${a.toFixed(3)})`;
+          ctx.beginPath();
+          ctx.arc(x, y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas, { passive: true });
+      if (isFinePointer && !reducedMotion) {
+        window.addEventListener('pointermove', (e) => {
+          ptr.tx = e.clientX / Math.max(cw, 1);
+          ptr.ty = e.clientY / Math.max(ch, 1);
+        }, { passive: true });
+      }
+      if (reducedMotion) {
+        prepareFrame(1.2);
+      } else {
+        const t0 = performance.now();
+        function tick(now) {
+          if (!document.hidden) prepareFrame((now - t0) * 0.001);
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      /* 2. 卡片柔光追踪 + 头像 3D 视差 */
+      if (isFinePointer && !reducedMotion) {
+        document.querySelectorAll('.glass-card').forEach((card) => {
+          card.addEventListener('pointermove', (e) => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+            card.style.setProperty('--my', `${e.clientY - r.top}px`);
+          });
+        });
+
+        const av = document.getElementById('avatarTilt');
+        if (av) {
+          av.addEventListener('pointermove', (e) => {
+            const r = av.getBoundingClientRect();
+            const nx = (e.clientX - r.left) / r.width - 0.5;
+            const ny = (e.clientY - r.top) / r.height - 0.5;
+            av.classList.add('tilting');
+            av.style.transform = `rotateX(${(-ny * 12).toFixed(2)}deg) rotateY(${(nx * 12).toFixed(2)}deg) scale(1.02)`;
+            av.style.setProperty('--ax', `${((nx + 0.5) * 100).toFixed(1)}%`);
+            av.style.setProperty('--ay', `${((ny + 0.5) * 100).toFixed(1)}%`);
+          });
+          av.addEventListener('pointerleave', () => {
+            av.classList.remove('tilting');
+            av.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+          });
+        }
+      }
+
+      /* 3. 阅读进度条 & 灵动岛滑动胶囊 */
+      const progressBar = document.getElementById('scrollProgress');
+      const navPill = document.getElementById('navPill');
+      const navLinks = Array.from(document.querySelectorAll('#navLinks a'));
+      const sections = navLinks.map((a) => document.getElementById(a.dataset.sec)).filter(Boolean);
+
+      function moveNavPill(el) {
+        if (!el) { navPill.style.opacity = '0'; return; }
+        navPill.style.opacity = '1';
+        navPill.style.width = `${el.offsetWidth}px`;
+        navPill.style.transform = `translateX(${el.offsetLeft}px)`;
+      }
+
+      function onScroll() {
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docH > 0 ? Math.min(Math.max(window.scrollY / docH, 0), 1) : 0;
+        progressBar.style.transform = `scaleX(${pct})`;
+        let activeIdx = -1;
+        const probe = window.scrollY + window.innerHeight * 0.36;
+        sections.forEach((sec, idx) => { if (probe >= sec.offsetTop) activeIdx = idx; });
+        navLinks.forEach((a, idx) => a.classList.toggle('active', idx === activeIdx));
+        moveNavPill(activeIdx >= 0 ? navLinks[activeIdx] : null);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      onScroll();
+
+      /* 4. 滚动渐入编排 */
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      /* 5. Apple 分段项目筛选滑块 */
+      const segPill = document.getElementById('segPill');
+      const segBtns = Array.from(document.querySelectorAll('.seg-btn'));
+      const projectCards = Array.from(document.querySelectorAll('.project-card'));
+
+      function moveSegPill(btn) {
+        segPill.style.width = `${btn.offsetWidth}px`;
+        segPill.style.transform = `translateX(${btn.offsetLeft}px)`;
+      }
+      moveSegPill(segBtns[0]);
+      window.addEventListener('resize', () => {
+        const active = document.querySelector('.seg-btn.active');
+        if (active) moveSegPill(active);
+      }, { passive: true });
+
+      segBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          segBtns.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          moveSegPill(btn);
+          const filter = btn.dataset.filter;
+          projectCards.forEach((card) => {
+            const match = filter === 'all' || card.dataset.cat === filter;
+            card.classList.toggle('is-hidden', !match);
+            card.classList.remove('pop-in');
+            if (match) { void card.offsetWidth; card.classList.add('pop-in'); }
+          });
+        });
       });
-    });
+
+      /* 6. 平滑转场跳转（含浏览器返回防白屏） */
+      function smoothGo(url) {
+        if (reducedMotion) { window.location.href = url; return; }
+        document.body.classList.add('page-leaving');
+        setTimeout(() => { window.location.href = url; }, 190);
+      }
+      window.addEventListener('pageshow', () => document.body.classList.remove('page-leaving'));
+
+      projectCards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          const link = e.target.closest('a');
+          if (link) {
+            if (link.target === '_blank') return;
+            e.preventDefault();
+            smoothGo(link.getAttribute('href'));
+            return;
+          }
+          if (e.target.closest('button')) return;
+          smoothGo(card.dataset.href);
+        });
+      });
+
+      /* 7. 悬浮 Toast 邮箱复制 */
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toastText');
+      let toastTimer = null;
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      document.querySelectorAll('.copy-btn').forEach((btn) => {
+        const email = btn.dataset.email;
+        btn.addEventListener('click', () => {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(email).then(() => showToast(`已复制邮箱：${email}`));
+          } else {
+            window.location.href = `mailto:${email}`;
+          }
+        });
+      });
+    })();
   </script>
 </body>
 </html>
