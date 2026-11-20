@@ -17,8 +17,8 @@
       --text-muted: #a1a1a6;
       --apple-blue: #0a84ff;
       --apple-blue-soft: rgba(10, 132, 255, 0.16);
-      --amber-soft: rgba(255, 159, 10, 0.16);
-      --amber-text: #ff9f0a;
+      --red-soft: rgba(255, 59, 48, 0.18);
+      --red-text: #ff6961;
       --shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
     }
 
@@ -111,7 +111,7 @@
       background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text);
     }
 
-    /* ========= 2x2 可点击跳转的项目卡片 ========= */
+    /* ========= 2x2 全配图标项目卡片 ========= */
     .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
     .project-card {
       border-radius: 28px; padding: 20px; display: flex; flex-direction: column;
@@ -120,14 +120,14 @@
     .project-card:hover { transform: translateY(-6px); background: var(--glass-hover); border-color: var(--border-hover); }
 
     .project-preview {
-      height: 162px; border-radius: 20px; margin-bottom: 18px; padding: 18px 20px;
+      height: 164px; border-radius: 20px; margin-bottom: 18px; padding: 18px 20px;
       display: flex; flex-direction: column; justify-content: space-between;
       border: 1px solid rgba(255, 255, 255, 0.12); position: relative; overflow: hidden;
     }
     .p-weijie   { background: linear-gradient(135deg, #0f172a 0%, #312e81 55%, #0e7490 100%); }
     .p-titi     { background: linear-gradient(135deg, #062c1e 0%, #0f766e 55%, #1d4ed8 100%); }
-    .p-spend    { background: linear-gradient(135deg, #0b1120 0%, #065f46 65%, #10b981 100%); }
-    .p-hardware { background: linear-gradient(135deg, #18181b 0%, #7c2d12 70%, #b45309 100%); }
+    .p-spend    { background: linear-gradient(135deg, #05261a 0%, #0d6847 65%, #10b981 100%); }
+    .p-hardware { background: linear-gradient(135deg, #09090b 0%, #450a0a 60%, #991b1b 100%); }
 
     .preview-top { display: flex; justify-content: space-between; align-items: center; }
     .preview-badge {
@@ -135,10 +135,10 @@
       background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
     }
     .preview-icon {
-      width: 42px; height: 42px; border-radius: 12px; object-fit: cover;
-      border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(0,0,0,0.3);
+      width: 46px; height: 46px; border-radius: 13px; object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.26); background: rgba(0, 0, 0, 0.35);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     }
-    .preview-num { font-family: "SF Mono", Consolas, monospace; font-size: 0.8rem; color: rgba(255,255,255,0.65); }
     .preview-title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
     .preview-title { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
     .enter-hint {
@@ -150,7 +150,7 @@
 
     .project-body { padding: 0 6px; display: flex; flex-direction: column; flex-grow: 1; }
     .project-body h3 { font-size: 1.16rem; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .exp-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; background: var(--amber-soft); color: var(--amber-text); font-weight: 600; }
+    .exp-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; background: var(--red-soft); color: var(--red-text); font-weight: 600; }
     .project-body p { font-size: 0.91rem; color: var(--text-muted); margin-bottom: 16px; flex-grow: 1; line-height: 1.65; }
 
     .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
@@ -244,7 +244,7 @@
             我就读于中山大学海洋工程与技术专业。在工科学习之外，我非常享受借助现代开发工具与 AI 协作（Vibe Coding）快速把脑海里的想法变成真正能运行的产品。
           </p>
           <p>
-            点击下方任意项目卡片，都可以进入对应的<strong>图文交互独立展示页</strong>，了解项目的设计思路、核心模块演示与源码信息。
+            点击下方任意项目卡片，都可以进入对应的<strong>图文交互独立展示页</strong>，体验核心功能演示并获取项目源码与在线入口。
           </p>
         </div>
 
@@ -332,16 +332,16 @@
           </div>
         </article>
 
-        <!-- 3. EasySpend 易支道（接入已有独立展示页） -->
-        <article class="glass project-card" data-href="https://patrick-arnold0712.github.io/easyspend-showcase/" data-external="true">
+        <!-- 3. EasySpend 易支道（过渡展示页 + 你的绿色钱包图标） -->
+        <article class="glass project-card" data-href="./projects/easyspend.html">
           <div class="project-preview p-spend">
             <div class="preview-top">
               <span class="preview-badge">Android · Compose</span>
-              <span class="preview-num">03 · LIVE SHOWCASE</span>
+              <img class="preview-icon" src="./easyspend-icon.png" alt="EasySpend 易支道图标" />
             </div>
             <div class="preview-title-row">
               <div class="preview-title">EasySpend 易支道</div>
-              <span class="enter-hint">进入展示页 ↗</span>
+              <span class="enter-hint">进入展示页 →</span>
             </div>
           </div>
           <div class="project-body">
@@ -356,18 +356,18 @@
               <span class="tag-blue">BYOK AI</span>
             </div>
             <div class="project-links">
-              <a href="https://patrick-arnold0712.github.io/easyspend-showcase/" target="_blank" rel="noopener" class="link-primary">进入独立展示页 ↗</a>
-              <a href="https://github.com/Patrick-Arnold0712/EasySpend" target="_blank" rel="noopener" class="link-secondary">GitHub 源码 ↗</a>
+              <a href="./projects/easyspend.html" class="link-primary">查看图文展示页 →</a>
+              <a href="https://patrick-arnold0712.github.io/easyspend-showcase/" target="_blank" rel="noopener" class="link-secondary">完整展示站 ↗</a>
             </div>
           </div>
         </article>
 
-        <!-- 4. HardwareGenerator -->
+        <!-- 4. HardwareGenerator（红黑电路图标 + 红黑预览卡） -->
         <article class="glass project-card" data-href="./projects/hardware-generator.html">
           <div class="project-preview p-hardware">
             <div class="preview-top">
               <span class="preview-badge">AI EDA Lab · Zero Deps</span>
-              <span class="preview-num">04</span>
+              <img class="preview-icon" src="./hardware-icon.svg" alt="HardwareGenerator 电路图标" />
             </div>
             <div class="preview-title-row">
               <div class="preview-title">HardwareGenerator</div>
@@ -419,20 +419,13 @@
   </main>
 
   <script>
-    // 点击项目卡片空白区域即可跳转对应展示页
     document.querySelectorAll('.project-card[data-href]').forEach((card) => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('a, button')) return;
-        const url = card.getAttribute('data-href');
-        if (card.getAttribute('data-external') === 'true') {
-          window.open(url, '_blank', 'noopener');
-        } else {
-          window.location.href = url;
-        }
+        window.location.href = card.getAttribute('data-href');
       });
     });
 
-    // 双邮箱一键复制
     document.querySelectorAll('.copy-btn').forEach((btn) => {
       const originalText = btn.textContent.trim();
       const email = btn.getAttribute('data-email');
